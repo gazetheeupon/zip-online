@@ -109,6 +109,24 @@
     <p class="privacy"><strong>How this works:</strong> this page uses the open-source JSZip library, running entirely as JavaScript in your browser tab. Your files are read locally and are never sent to any server.</p>
   </div>
 
+
+  <div class="card faq">
+    <h2>Troubleshooting</h2>
+    <details><summary>Extracted filenames look garbled</summary>
+      <p>This page assumes UTF-8 filename encoding, which is what modern ZIP tools use. A ZIP created long ago on an older non-UTF-8 system can show garbled names for anything outside plain ASCII.</p>
+    </details>
+    <details><summary>A file renamed to .zip won't extract properly</summary>
+      <p>Some files are given a <code>.zip</code> extension even though they're really a RAR, 7-Zip, or other archive format. Try the <a href="https://gazetheeupon.github.io/archive-extractor/">Universal Archive Extractor</a> instead &mdash; it detects the real format from the file's contents, not its name.</p>
+    </details>
+  </div>
+
+  <div class="card cli">
+    <h2>Prefer the command line?</h2>
+    <div class="cli-block">zip -r archive.zip folder/   # create
+unzip archive.zip           # extract</div>
+  </div>
+
+
   <div id="ad-slot" data-aads-unit="2455559"></div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/jszip/dist/jszip.min.js"></script>
