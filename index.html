@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Online ZIP Creator & Extractor — Private, In-Browser, No Upload</title>
+<meta name="description" content="Create ZIP archives from your files, or extract files from a ZIP archive, entirely in your browser. No upload, no account, no file size games.">
+<style>
+  :root{--bg:#0f1720;--card:#1a2532;--text:#e8edf2;--muted:#93a3b3;--accent:#4fa8ff;--border:#2a3745;}
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;}
+  header{padding:2rem 1rem 1rem;text-align:center;}
+  h1{font-size:1.6rem;margin:0 0 .4rem;}
+  p.sub{color:var(--muted);margin:0;max-width:640px;margin:0 auto;}
+  main{max-width:780px;margin:0 auto;padding:1.5rem 1rem 3rem;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1.2rem;}
+  .tabs{display:flex;gap:.5rem;margin-bottom:1rem;}
+  .tab{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:.6rem 1.2rem;cursor:pointer;font-size:.95rem;}
+  .tab.active{background:var(--accent);color:#04121f;border-color:var(--accent);font-weight:600;}
+  .panel{display:none;}
+  .panel.active{display:block;}
+  .dropzone{border:2px dashed var(--border);border-radius:10px;padding:2.2rem 1rem;text-align:center;cursor:pointer;transition:border-color .15s;}
+  .dropzone.drag{border-color:var(--accent);}
+  .dropzone input{display:none;}
+  .dropzone .hint{color:var(--muted);font-size:.9rem;margin-top:.4rem;}
+  ul#fileList, ul#extractList{list-style:none;padding:0;margin:1rem 0 0;}
+  ul#fileList li, ul#extractList li{display:flex;justify-content:space-between;align-items:center;background:#0d151d;border:1px solid var(--border);border-radius:8px;padding:.5rem .8rem;margin-bottom:.4rem;font-size:.9rem;}
+  ul#fileList li button{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:1rem;}
+  button{background:var(--accent);color:#04121f;border:none;border-radius:8px;padding:.7rem 1.4rem;font-size:1rem;font-weight:600;cursor:pointer;}
+  button:disabled{opacity:.5;cursor:not-allowed;}
+  button.secondary{background:transparent;border:1px solid var(--border);color:var(--text);}
+  input[type=text]{background:#0d151d;color:var(--text);border:1px solid var(--border);border-radius:6px;padding:.5rem .7rem;}
+  .row{display:flex;gap:.8rem;align-items:center;flex-wrap:wrap;margin-top:1rem;}
+  #status,#statusExtract{color:var(--muted);font-size:.9rem;margin-top:.6rem;min-height:1.2em;}
+  a.dl{color:var(--accent);}
+  footer{text-align:center;color:var(--muted);font-size:.82rem;padding:1.5rem 1rem 2.5rem;}
+  footer a{color:var(--accent);}
+  .privacy{font-size:.85rem;color:var(--muted);}
+  .privacy strong{color:var(--text);}
+</style>
+<link rel="canonical" href="https://gazetheeupon.github.io/zip-online/">
+<meta property="og:title" content="Free Online ZIP Creator & Extractor">
+<meta property="og:description" content="Create ZIP archives from your files, or extract files from a ZIP archive, entirely in your browser. No upload, no account, no file size games.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gazetheeupon.github.io/zip-online/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Free Online ZIP Creator & Extractor">
+<meta name="twitter:description" content="Create ZIP archives from your files, or extract files from a ZIP archive, entirely in your browser. No upload, no account, no file size games.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Free Online ZIP Creator & Extractor",
+  "url": "https://gazetheeupon.github.io/zip-online/",
+  "description": "Create ZIP archives from your files, or extract files from a ZIP archive, entirely in your browser. No upload, no account, no file size games.",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Any (runs in web browser)",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+}
+</script>
+</head>
+<body>
+<header>
+  <h1>Free ZIP Creator &amp; Extractor</h1>
+  <p class="sub">Create a ZIP archive from your files, or extract files from a ZIP. Everything happens locally in your browser &mdash; nothing is uploaded.</p>
+</header>
+<main>
+  <div class="card">
+    <div class="tabs">
+      <button class="tab active" id="tabCreate">Create ZIP</button>
+      <button class="tab" id="tabExtract">Extract ZIP</button>
+    </div>
+
+    <div class="panel active" id="panelCreate">
+      <div class="dropzone" id="dropzoneCreate">
+        <div>Drop files here, or click to choose files</div>
+        <div class="hint">Add as many files as you like &mdash; they will all be packed into one .zip</div>
+        <input type="file" id="fileInputCreate" multiple>
+      </div>
+      <ul id="fileList"></ul>
+      <div class="row">
+        <label for="zipName" class="hint">Archive name:</label>
+        <input type="text" id="zipName" value="archive.zip">
+        <button id="createBtn" disabled>Create ZIP &amp; Download</button>
+      </div>
+      <div id="status"></div>
+    </div>
+
+    <div class="panel" id="panelExtract">
+      <div class="dropzone" id="dropzoneExtract">
+        <div>Drop a .zip file here, or click to choose one</div>
+        <div class="hint">Lists every file inside so you can download them individually or all at once.</div>
+        <input type="file" id="fileInputExtract" accept=".zip,application/zip,application/x-zip-compressed">
+      </div>
+      <div id="statusExtract"></div>
+      <div class="row">
+        <button id="downloadAllExtractBtn" class="secondary" style="display:none;">Download all</button>
+      </div>
+      <ul id="extractList"></ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="privacy"><strong>How this works:</strong> this page uses the open-source JSZip library, running entirely as JavaScript in your browser tab. Your files are read locally and are never sent to any server.</p>
+  </div>
+
+  <div id="ad-slot"></div>
+</main>
+<footer>
+  Free, ad-supported, no signup. Built with <a href="https://github.com/Stuk/jszip" target="_blank" rel="noopener">JSZip</a> (MIT/GPLv3).
+<div style="margin-top:.6rem;">&copy; 2026 GazeTheeUpon. All rights reserved. <a href="LICENSE" style="color:inherit;">Source license</a> &mdash; view-source friendly, redistribution not permitted.</div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/jszip/dist/jszip.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
