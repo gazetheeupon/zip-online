@@ -63,6 +63,30 @@
   }
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Extracted filenames look garbled",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "This page assumes UTF-8 filename encoding, which is what modern ZIP tools use. A ZIP created long ago on an older non-UTF-8 system can show garbled names for anything outside plain ASCII."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "A file renamed to .zip won't extract properly",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Some files are given a .zip extension even though they're really a RAR, 7-Zip, or other archive format. Try the Universal Archive Extractor instead \u2014 it detects the real format from the file's contents, not its name."
+      }
+    }
+  ]
+}
+</script>
 </head>
 <body>
 <header>
